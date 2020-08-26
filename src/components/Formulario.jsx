@@ -1,11 +1,42 @@
-import React from 'react';
+import React, {useState} from 'react';
 const Formulario = () => {
+
+    const [busqueda, guardarBusqueda]=useState({
+        artista:'',
+        cancion:''
+    })
+
+    const [error,guardarError]=useState(false)
+    const {artista,cancion}= busqueda;
+
+    const actualizarState = e =>{
+        guardarBusqueda({
+            ...busqueda,
+            [e.target.name]: e.target.value
+
+        })
+    }
+
+    //consultar las apis
+    const buscarInformacion = e =>{
+        e.preventDefault();
+
+        if(artista.trim() === '' || cancion.trim() === ''){
+            guardarError(true);
+            return;
+        }
+        guardarError(false);
+        //pasar al componente principal
+    }
+
+
     return ( 
         <div className="bg-info">
             <div className="container">
                 <div className="row">
                     <form 
                     className="col card text-white bg-transparent mb-5 pt-5 pb-2"
+                    onSubmit={buscarInformacion}
                     >
                         <fieldset>
                             <legend className='text-center'>Buscador Letras y Canciones</legend>
@@ -18,6 +49,8 @@ const Formulario = () => {
                                         className='form-control'
                                         name='artista'
                                         placeholder='Nombre del artista'
+                                        value={artista}
+                                        onChange={actualizarState}
                                         />
                                     </div>
                                 </div>
@@ -29,6 +62,9 @@ const Formulario = () => {
                                         className='form-control'
                                         name='cancion'
                                         placeholder='Nombre de la cancion'
+                                        value={cancion}
+                                        onChange={actualizarState}
+
                                         />
                                     </div>
 
