@@ -7,6 +7,8 @@ function App() {
    const[busquedaletra,guardarBusquedaLetra]=useState({});
    //state para la letra
    const [letra, guardarLetra]=useState('')
+   //state para la informacion del artista
+   const [info,guardarInfo]=useState({})
 
    useEffect(() => {
      //si esta vacio el objeto retornar
@@ -14,13 +16,19 @@ function App() {
 
      const consultarAPILetra = async ()=>{
        const {artista,cancion}=busquedaletra;
-
       const url=`https://api.lyrics.ovh/v1/${artista}/${cancion}`;
+      const url2 =`https://theaudiodb.com/api/v1/json/1/search.php?s=${artista}`
 
-      const resultado = await Axios(url);
+      //Utilizando promise para llamar a ambas APIS con un arreglo de ambas
+      const [letra,informacion]= await Promise.all([
+        Axios(url),
+        Axios(url2)
+      ])
 
-      //guardando la letra en su state
-      guardarLetra(resultado.data.lyrics)
+      //Guardando cada elemento en un state
+      guardarLetra(letra.data.lyrics)
+      guardarInfo(informacion)    
+      guardarBusquedaLetra({});
 
      }
      consultarAPILetra()
