@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-const Formulario = () => {
+const Formulario = ({guardarBusquedaLetra}) => {
 
     const [busqueda, guardarBusqueda]=useState({
         artista:'',
@@ -9,6 +9,7 @@ const Formulario = () => {
     const [error,guardarError]=useState(false)
     const {artista,cancion}= busqueda;
 
+    //actualizando state con los datos del form
     const actualizarState = e =>{
         guardarBusqueda({
             ...busqueda,
@@ -17,7 +18,7 @@ const Formulario = () => {
         })
     }
 
-    //consultar las apis
+    //consultar las apis on submit
     const buscarInformacion = e =>{
         e.preventDefault();
 
@@ -26,13 +27,15 @@ const Formulario = () => {
             return;
         }
         guardarError(false);
-        //pasar al componente principal
+        //pasar al componente principal pasamos la busqueda
+        guardarBusquedaLetra(busqueda);
     }
 
 
     return ( 
         <div className="bg-info">
             <div className="container">
+            {error ? <p className='alert alert-danger text-center p-2'>Todos los cambios son obligatorios</p> : null}
                 <div className="row">
                     <form 
                     className="col card text-white bg-transparent mb-5 pt-5 pb-2"
