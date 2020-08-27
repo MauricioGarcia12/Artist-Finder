@@ -27,6 +27,7 @@ const Formulario = ({guardarBusquedaLetra}) => {
             return;
         }
         guardarError(false);
+        
         //pasar al componente principal pasamos la busqueda
         guardarBusquedaLetra(busqueda);
     }
