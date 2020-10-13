@@ -4,6 +4,7 @@ import Formulario from './components/Formulario'
 import Cancion from './components/Cancion'
 import Info from './components/Info'
 
+
 function App() {
   //definir state
    const[busquedaletra,guardarBusquedaLetra]=useState({});
@@ -12,32 +13,41 @@ function App() {
    //state para la informacion del artista
    const [info,guardarInfo]=useState({})
 
+
+
+
    useEffect(() => {
-     //si esta vacio el objeto retornar
-     if(Object.keys(busquedaletra).length ===0) return;
+    if (Object.keys(busquedaletra).length === 0) return;
+ 
+    const consultarApiLetra = async () => {
+      const { artista,cancion } = busquedaletra;
+      const url = `https://api.lyrics.ovh/v1/${artista}/${cancion}`;
+ 
+      const [letra] = await Promise.all([Axios(url)]);
+ 
+      guardarLetra(letra.data.lyrics);
+ 
+    };
+    consultarApiLetra();
+  }, [busquedaletra]);
 
-     const consultarAPILetra = async ()=>{
 
-       const {artista,cancion}=busquedaletra;
-      const url=`https://api.lyrics.ovh/v1/${artista}/${cancion}`;
-      const url2 =`https://theaudiodb.com/api/v1/json/1/search.php?s=${artista}`
+  useEffect(() => {
+    if (Object.keys(busquedaletra).length === 0) return;
+ 
+    const consultarApiLetra = async () => {
+      const { artista } = busquedaletra;
+      const url2 = `https://www.theaudiodb.com/api/v1/json/1/search.php?s=${artista}`;
+ 
+      const [informacion] = await Promise.all([ Axios(url2)]);
+ 
+     guardarInfo(informacion.data.artists[0]);
+ 
+    };
+    consultarApiLetra();
+  }, [busquedaletra]);
 
-      //Utilizando promise para llamar a ambas APIS con un arreglo de ambas
-      const [letra,informacion]= await Promise.all([
-        Axios(url),
-        Axios(url2)
-      ])
-
-      //Guardando cada elemento en un state
-      guardarLetra(letra.data.lyrics)
-      guardarInfo(informacion.data.artists[0])    
-      guardarBusquedaLetra({});
-
-     }
-     consultarAPILetra()
-
-     
-   }, [busquedaletra,info,letra])
+   
 
   return (
     <Fragment>
@@ -52,6 +62,7 @@ function App() {
             />
 
           </div>
+
           <div className='col-md-6'>
             <Cancion
             letra={letra}
